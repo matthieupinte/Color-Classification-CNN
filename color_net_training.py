@@ -7,6 +7,10 @@ from keras.callbacks import ModelCheckpoint
 import numpy as np
 import keras.backend as K
 
+import os
+
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
 def beer_net(num_classes):
     # placeholder for input image
     input_image = Input(shape=(224,224,3))
@@ -45,7 +49,7 @@ def beer_net(num_classes):
 
     # fifth top convolution layer
     top_top_conv5 = Convolution2D(filters=64,kernel_size=(3,3),strides=(1,1),activation='relu',padding='same')(top_top_conv4)
-    top_top_conv5 = MaxPooling2D(pool_size=(3,3),strides=(2,2))(top_top_conv5) 
+    top_top_conv5 = MaxPooling2D(pool_size=(3,3),strides=(2,2))(top_top_conv5)
 
     top_bot_conv5 = Convolution2D(filters=64,kernel_size=(3,3),strides=(1,1),activation='relu',padding='same')(top_bot_conv4)
     top_bot_conv5 = MaxPooling2D(pool_size=(3,3),strides=(2,2))(top_bot_conv5)
@@ -85,7 +89,7 @@ def beer_net(num_classes):
 
     # fifth bottom convolution layer
     bottom_top_conv5 = Convolution2D(filters=64,kernel_size=(3,3),strides=(1,1),activation='relu',padding='same')(bottom_top_conv4)
-    bottom_top_conv5 = MaxPooling2D(pool_size=(3,3),strides=(2,2))(bottom_top_conv5) 
+    bottom_top_conv5 = MaxPooling2D(pool_size=(3,3),strides=(2,2))(bottom_top_conv5)
 
     bottom_bot_conv5 = Convolution2D(filters=64,kernel_size=(3,3),strides=(1,1),activation='relu',padding='same')(bottom_bot_conv4)
     bottom_bot_conv5 = MaxPooling2D(pool_size=(3,3),strides=(2,2))(bottom_bot_conv5)
@@ -102,16 +106,16 @@ def beer_net(num_classes):
     FC_2 = Dense(units=4096, activation='relu')(FC_1)
     FC_2 = Dropout(0.6)(FC_2)
     output = Dense(units=num_classes, activation='softmax')(FC_2)
-    
+
     model = Model(inputs=input_image,outputs=output)
     sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
     # sgd = SGD(lr=0.01, momentum=0.9, decay=0.0005, nesterov=True)
     model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
-    
+
     return model
 
 img_rows , img_cols = 224,224
-num_classes = 9
+num_classes = 7
 batch_size = 32
 nb_epoch = 5
 
